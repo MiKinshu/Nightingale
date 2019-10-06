@@ -59,6 +59,9 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         };
+
+        Intent intent= new Intent(MainActivity.this,com.kinshuu.nightingale.MapsActivity.class);
+        startActivity(intent);
     }
 
     @Override
@@ -85,8 +88,6 @@ public class MainActivity extends AppCompatActivity {
         }
         Log.d(TAG, "onActivityResult: Exiting ActivityResult");
 
-        Intent intent= new Intent(MainActivity.this,com.kinshuu.nightingale.MapsActivity.class);
-        startActivity(intent);
 
     }
 }
