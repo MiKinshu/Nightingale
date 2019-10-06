@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "365446743705",
+    "firebase_url": "https://nightingle-34780.firebaseio.com",
+    "project_id": "nightingle-34780",
+    "storage_bucket": "nightingle-34780.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:365446743705:android:29e98b299165cfe2e81a08",
+        "android_client_info": {
+          "package_name": "com.kinshuu.nightingale"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "365446743705-r3l6u5dvjb82nv1l3akd3579gda5bj7c.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.kinshuu.nightingale",
+            "certificate_hash": "269c3e14a31b90617d7ffc884537a6efeab08040"
+          }
+        },
+        {
+          "client_id": "365446743705-s7g7eji4tqam6tj1ja8rh9dvn3u3fst4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAbfIITfyIXVB-hUMut-_SEoSAIHsluL2U"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "365446743705-s7g7eji4tqam6tj1ja8rh9dvn3u3fst4.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
