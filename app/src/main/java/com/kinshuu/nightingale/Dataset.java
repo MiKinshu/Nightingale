@@ -1,4 +1,4 @@
-package com.example.acer.securityapp;
+package com.kinshuu.nightingale;
 
 import android.location.Location;
 import android.util.Log;
@@ -7,7 +7,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class JsonStringData {
+public class Dataset {
 
 
     public JSONObject getJsonObject() throws JSONException {
