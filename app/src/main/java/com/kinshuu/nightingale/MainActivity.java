@@ -40,6 +40,9 @@ public class MainActivity extends AppCompatActivity {
         ImageButton IBTNalert=findViewById(R.id.IBTNalert);
         Button BTNsettings=findViewById(R.id.BTNsettings);
 
+        startService(new Intent(this, Listener.class));
+        Toast.makeText(this, "Crossed Service", Toast.LENGTH_SHORT).show();
+
         IBTNheat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -86,7 +89,7 @@ public class MainActivity extends AppCompatActivity {
                 FirebaseUser user= firebaseAuth.getCurrentUser();
                 if(user!=null){
                     // user is signed in
-                    Toast.makeText(MainActivity.this, "Welcome "+user.getDisplayName(), Toast.LENGTH_SHORT).show();
+                   // Toast.makeText(MainActivity.this, "Welcome "+user.getDisplayName(), Toast.LENGTH_SHORT).show();
                 }
                 else{
                     // user is signed out
