@@ -68,9 +68,12 @@ public class MainActivity extends AppCompatActivity {
         IBTNroute.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(MainActivity.this, "Finding shortest route", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(MainActivity.this, "Finding shortest route", Toast.LENGTH_SHORT).show();
+                Intent intent= new Intent(MainActivity.this,com.kinshuu.nightingale.SafestPath.class);
+                startActivity(intent);
             }
         });
+
 
         BTNsettings.setOnClickListener(new View.OnClickListener() {
             @Override

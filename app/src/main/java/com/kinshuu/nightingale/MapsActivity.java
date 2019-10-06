@@ -59,8 +59,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
 
         // Add a marker in Sydney and move the camera
+        //user location
         LatLng delhi = new LatLng(28.563, 77.267600000000002);
-        mMap.addMarker(new MarkerOptions().position(delhi).title("Marker in Sydney"));
+        mMap.addMarker(new MarkerOptions().position(delhi).title("Marker in delhi"));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(delhi));
         addHeatMap();
     }
@@ -69,7 +70,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         List<LatLng> list = null;
 
-        // Get the data: latitude/longitude positions of police stations.
+        // Get the data: latitude/longitude positions of crime rates.
         try {
             list = readItems(R.raw.crime_rate);
         } catch (JSONException e) {
