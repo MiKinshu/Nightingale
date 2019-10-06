@@ -17,6 +17,7 @@ import com.google.android.gms.maps.model.TileOverlay;
 import com.google.android.gms.maps.model.TileOverlayOptions;
 import com.google.maps.android.heatmaps.HeatmapTileProvider;
 import com.google.maps.android.heatmaps.Gradient;
+import com.google.maps.android.heatmaps.WeightedLatLng;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -56,7 +57,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-
+        WeightedLatLng weightedLatLng= new WeightedLatLng(new LatLng(12,13),3);
 
         // Add a marker in Sydney and move the camera
         //user location
@@ -68,7 +69,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private void addHeatMap() {
 
-        List<LatLng> list = null;
+        List<WeightedLatLng> list = null;
 
         // Get the data: latitude/longitude positions of crime rates.
         try {
@@ -77,37 +78,46 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             Toast.makeText(this, "Problem reading list of locations.", Toast.LENGTH_LONG).show();
         }
 
-//        int[] colors = {
-//                Color.rgb(0, 225, 0),
-//                Color.rgb(45, 180, 0),
-//                Color.rgb(100, 125, 0),// green
-//                Color.rgb(255, 0, 0)    // red
-//        };
-//
-//        float[] startPoints = {
-//                0,0.1f,0.2f,0.3f,0.4f
-//        };
-//
-//        Gradient gradient = new Gradient(colors, startPoints);
+        int[] colors = {
+                Color.rgb(0, 0, 255),
+                Color.rgb(45, 150, 30),
+                Color.rgb(100, 125, 0),// green
+                Color.rgb(255, 0, 0)    // red
+        };
+
+        float[] startPoints = {
+                0,0.1f,0.2f,0.3f
+        };
+
+        Gradient gradient = new Gradient(colors, startPoints);
         // Create a heat map tile provider, passing it the latlngs of the police stations.
         mProvider = new HeatmapTileProvider.Builder()
-                .data(list)
-//                .gradient(gradient)
+                .weightedData(list)
+                .gradient(gradient)
                 .build();
         // Add a tile overlay to the map, using the heat map tile provider.
         mOverlay = mMap.addTileOverlay(new TileOverlayOptions().tileProvider(mProvider));
     }
 
-    private ArrayList<LatLng> readItems(int resource) throws JSONException {
-        ArrayList<LatLng> list = new ArrayList<LatLng>();
+    private ArrayList<WeightedLatLng> readItems(int resource) throws JSONException {
+        ArrayList<WeightedLatLng> list = new ArrayList<WeightedLatLng>();
         InputStream inputStream = getResources().openRawResource(resource);
         String json = new Scanner(inputStream).useDelimiter("\\A").next();
         JSONArray array = new JSONArray(json);
         for (int i = 0; i < array.length(); i++) {
             JSONObject object = array.getJSONObject(i);
+
             double lat = object.getDouble("longi");
             double lng = object.getDouble("lati");
-            list.add(new LatLng(lat, lng));
+
+            if(object.has("mag"))
+            {
+                double weight = object.getDouble("mag");
+                list.add(new WeightedLatLng(new LatLng(lat,lng),weight));
+            }
+            else {
+                list.add(new WeightedLatLng(new LatLng(lat,lng),0));
+            }
         }
         return list;
     }
