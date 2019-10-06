@@ -8,6 +8,9 @@ import android.content.Intent;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthUI;
@@ -30,6 +33,48 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        ImageButton IBTNheat=findViewById(R.id.IBTNheat);
+        ImageButton IBTNroute=findViewById(R.id.IBTNroute);
+        ImageButton IBTNcab=findViewById(R.id.IBTNcab);
+        ImageButton IBTNalert=findViewById(R.id.IBTNalert);
+        Button BTNsettings=findViewById(R.id.BTNsettings);
+
+        IBTNheat.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent= new Intent(MainActivity.this,com.kinshuu.nightingale.MapsActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        IBTNalert.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(MainActivity.this, "Alert Clicked", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        IBTNcab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(MainActivity.this, "Cab Clicked", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        IBTNroute.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(MainActivity.this, "Finding shortest route", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        BTNsettings.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(MainActivity.this, "Settings clicked", Toast.LENGTH_SHORT).show();
+            }
+        });
 
 
         //initialise Firebase components
@@ -59,9 +104,6 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         };
-
-        Intent intent= new Intent(MainActivity.this,com.kinshuu.nightingale.MapsActivity.class);
-        startActivity(intent);
     }
 
     @Override
@@ -87,7 +129,5 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         Log.d(TAG, "onActivityResult: Exiting ActivityResult");
-
-
     }
 }
