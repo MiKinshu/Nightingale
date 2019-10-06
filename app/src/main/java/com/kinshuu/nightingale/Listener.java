@@ -31,6 +31,7 @@ public class Listener extends Service {
     String CHIRP_APP_KEY = "a425Bff1fE83BaFD9e5F6d5A3";
     String CHIRP_APP_SECRET = "A0DFeB41c736196Fa82fBFCcAa36E334610Ea71bd128e7e9D5";
     String CHIRP_APP_CONFIG = "GpEu5S5FtjVzSmhBNpDrmLU9Ojw4c2xcsrhoPuerCsqSNfoicEuPCx0iX1lNFMYN2ekd4+HAT1wXVvvgqaTrm7FXO3EKt6aDCEOYcZtc8oPSMNk83Q/UMFfdgimH5AYSbx9yFiuvoKAuhXA31VsiEfdYSLD82zXTgEjgTYyzje1BMRIEqXKV3fG6pT14vftbJ1gc3qJR1RW4+/g1bVqKo6zG7gHkC+qwzSrqQ1/63lA2wMQ8Cvu3mmMzvgFVWlsBUg++sxGaztNCX0F7Ig96oi7PGeVGZGj5nnicfJsL3RHH2siNwoILh9E6SkejXNGq5uq35juxz1ySslDGTOr2y0yvKxjfgC5JI2+01TLlXGPTY8q7cDpASP9rbSwHWoEu7HIxHgu/g1ZZTfo21HxAkjHcxg0Zj+25HkTCalQ/jbrB33yYEUUI+05l+dP0OU29SMeZ1G2xTmrzy2nerEzTOW9CECAu/X0Vy6Wk+qYScuW64uboqeQnSfer5qmDK44jNYuwAg9ZklpzkTKaIRD/2bpsBElAwwS5UvTI5u2uQ/obYopGHC6VB88Ird1Q41FGGnIfMYwmvRJfPpBa4TGvU8S/9NoNZF891m0FYvy0FoN2kxus+Xi6z7O2lvcEGON+aiiKenCC+xdAimpNEGVJyQH36AG6KsIz3iAJT+Q/lpBwbWerYf5s7SlNZhlkxeWQfb+X7p/SSNndfrxsuX5g3RhMKXbXvG3bQueQHzguaWi5ykqMWzioEQA/xGeRhPu1gYaMDXYmonLfX/WWEuEpEqhmSlNh/ePnqM85CMkXBPz0AbleD5Xe0nz+f/hO2iX09br1ymNpJ2PnhEwpAPffoGNNYrxceUxCYYEMImRMaBjskKxoGl5jxknvY9G5jn6kW16/91NApoeul75yRFdzqF5fYT68uxNTzlF9stX6ukvsDoWPr8EFWl0OY82pgUfRiGdQwyy/0f9k8SKD41Ptcyac0VVeiZcoLeuRtm3EJPk9bgMk7FpQmkTz/dOSXVCb4upARtDmGY1+v5nbsxNEocmC9aVlHWXyYKqzKjZzf15XPLMUGP5/HPLA+8bNs7G9MT+vWi5EhR/QMKaDykLPdQCKrDJvXdPxeKVriDIqRGim24EmheFz4lb2Q2apYkc4JCD4gnXKuvrTdhtBtHZx3A==";
+    String TAG="MyLOGS";
 
     public Listener() {
     }
@@ -38,28 +39,31 @@ public class Listener extends Service {
     @Override
     public IBinder onBind(Intent intent) {
         // TODO: Return the communication channel to the service.
+        ChirpError error = chirp.start(true, true);
+        if (error.getCode() > 0) {
+            Log.e("ChirpError: ", error.getMessage());
+        } else {
+            Log.v("ChirpSDK: ", "Started ChirpSDK");
+        }
         throw new UnsupportedOperationException("Not yet implemented");
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId){
-
-        // do your jobs here
-//        Toast.makeText(this, "Service LMAO noobs", Toast.LENGTH_SHORT).show();
-
-        /*chirp = new ChirpSDK(this, CHIRP_APP_KEY, CHIRP_APP_SECRET);
-        ChirpError error = chirp.setConfig(CHIRP_APP_CONFIG);
-        if (error.getCode() == 0) {
-            Log.v("ChirpSDK: ", "Configured ChirpSDK");
-        } else {
+        
+        ChirpError error = chirp.start(true, true);
+        if (error.getCode() > 0) {
             Log.e("ChirpError: ", error.getMessage());
-        }*/
+        } else {
+            Log.v(TAG, "Started ChirpSDK");
+        }
+
         ChirpEventListener chirpEventListener = new ChirpEventListener() {
             @Override
             public void onReceived(byte[] data, int channel) {
                 if (data != null) {
                     String identifier = new String(data);
-                    Log.v("ChirpSDK: ", "Received " + identifier);
+                    Log.v(TAG, "Received " + identifier);
                     Toast.makeText(Listener.this, "Received " + identifier, Toast.LENGTH_LONG).show();
                 } else {
                     Log.e("ChirpError: ", "Decode failed");
@@ -73,8 +77,8 @@ public class Listener extends Service {
             public void onSystemVolumeChanged(float old, float current) {}
         };
         chirp.setListener(chirpEventListener);
+        Toast.makeText(this, "Service LMAO noobs", Toast.LENGTH_SHORT).show();
         startForeground();
-
         return super.onStartCommand(intent, flags, startId);
     }
 
@@ -105,7 +109,6 @@ public class Listener extends Service {
         notificationManager.createNotificationChannel(channel);
     }
 
-
     @Override
     public void onCreate() {
         super.onCreate();
@@ -119,7 +122,6 @@ public class Listener extends Service {
 
     @Override
     public void onRebind(Intent intent) {
-
             // Start ChirpSDK sender and receiver, if no arguments are passed both sender and receiver are started
             ChirpError error = chirp.start(true, true);
             if (error.getCode() > 0) {
