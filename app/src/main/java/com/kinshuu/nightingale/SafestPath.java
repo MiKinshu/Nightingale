@@ -34,7 +34,7 @@ public class SafestPath extends AppCompatActivity implements OnMapReadyCallback,
         getDirection.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                new FetchURL(SafestPath.this).execute(getUrl(place1.getPosition(), place2.getPosition(), "driving"), "driving");
+                FetchURL f=(FetchURL) new FetchURL(SafestPath.this).execute(getUrl(place1.getPosition(), place2.getPosition(), "driving"), "driving");
             }
         });
         //27.658143,85.3199503
@@ -66,7 +66,7 @@ public class SafestPath extends AppCompatActivity implements OnMapReadyCallback,
         // Output format
         String output = "json";
         // Building the url to the web service
-        String url = "https://maps.googleapis.com/maps/api/directions/" + output + "?" + parameters + "&key=" + "AIzaSyAtT96uUSWvIVvPoj_yxGRLeSzc5lohqaE";
+        String url = "https://maps.googleapis.com/maps/api/directions/" + output + "?" + parameters + "&alternatives=true" + "&key=" + "AIzaSyAtT96uUSWvIVvPoj_yxGRLeSzc5lohqaE";
         return url;
     }
 

@@ -2,4 +2,5 @@
     <string name="app_name">Nightingale</string>
     <string name="title_activity_maps">Map</string>
     <string name="title_activity_safest_route_activity">Map</string>
+    <string name="title_activity_safest_path2">Map</string>
 </resources>
