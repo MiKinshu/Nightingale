@@ -39,8 +39,8 @@ public class SafestPath extends AppCompatActivity implements OnMapReadyCallback,
         });
         //27.658143,85.3199503
         //27.667491,85.3208583
-        place1 = new MarkerOptions().position(new LatLng(27.658143, 85.3199503)).title("Location 1");
-        place2 = new MarkerOptions().position(new LatLng(27.667491, 85.3208583)).title("Location 2");
+        place1 = new MarkerOptions().position(new LatLng(28.661369, 77.194405)).title("Location 1");
+        place2 = new MarkerOptions().position(new LatLng(28.635324, 77.224944)).title("Location 2");
         MapFragment mapFragment = (MapFragment) getFragmentManager()
                 .findFragmentById(R.id.mapFrag);
         mapFragment.getMapAsync(this);
