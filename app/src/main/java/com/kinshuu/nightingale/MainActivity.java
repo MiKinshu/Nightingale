@@ -34,6 +34,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 import io.chirp.chirpsdk.ChirpSDK;
@@ -62,20 +63,22 @@ public class MainActivity extends AppCompatActivity {
     public static DatabaseReference mDatabaseReference,mDatabaseReferencewide;
     public static ChildEventListener mChildEventListener;
     public static String mUsername="0";
-    String lat="28.613";
-    String longi="77.229";
+    public static String lat="28.613";
+    public static String longi="77.229";
+    public static ArrayList<ContactDetails> contacts;
 
     //textmessage
     private SmsManager mMessageManager;
-    private double mlat=18.6058 ,mLong=73.8753;
+    public static  double mlat=18.6058 ,mLong=73.8753;
     private LocationManager mLocationManager = null;
     ContactDetails contactDetails;
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        contacts=new ArrayList<>();
         mFirebaseDatabase=FirebaseDatabase.getInstance();
         mDatabaseReference=mFirebaseDatabase.getReference().child(mUsername);
         mDatabaseReferencewide=mFirebaseDatabase.getReference().child("users");
@@ -102,10 +105,9 @@ public class MainActivity extends AppCompatActivity {
         startService(new Intent(this, Listener.class));
 
         //text message
-       /* if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(new String[]{Manifest.permission.SEND_SMS, Manifest.permission.READ_PHONE_STATE,Manifest.permission.ACCESS_COARSE_LOCATION,Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.READ_CONTACTS,Manifest.permission.CALL_PHONE}, 101);
+        if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED ) {
+            requestPermissions(new String[]{Manifest.permission.SEND_SMS}, 101);
         }
-        mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, getLocationListener());*/
 
         IBTNheat.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -134,17 +136,12 @@ public class MainActivity extends AppCompatActivity {
                 }
                 else{
                     //send text message
+                    String number= contacts.get(Integer.parseInt(mUsername)).getNum1();
                     Toast.makeText(MainActivity.this, "Network Available, sending text.", Toast.LENGTH_SHORT).show();
+                    SmsManager smsManager = SmsManager.getDefault();
+                    smsManager.sendTextMessage(number, null, "I am sending my location for precaution for my safety. lat = " + mlat + " and long= " + mLong, null, null);
                 }
-                /*Geocoder gcd = new Geocoder(getApplicationContext(), Locale.getDefault());
-                List<Address> address = null;
-                try {
-                    address = gcd.getFromLocation(mlat,mLong,1);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-//                mMessageManager.sendTextMessage("6265502674", null, "I am sending my location for precaution for my safety. "+"lat= " + mlat + " and long= " + mLong, null, null);
-            */}
+            }
         });
 
         IBTNcab.setOnClickListener(new View.OnClickListener() {
@@ -166,12 +163,10 @@ public class MainActivity extends AppCompatActivity {
         BTNsettings.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                Toast.makeText(MainActivity.this, "Settings clicked", Toast.LENGTH_SHORT).show();
                 Intent intent= new Intent(MainActivity.this,com.kinshuu.nightingale.Settings.class);
                 startActivity(intent);
             }
         });
-
 
         //initialise Firebase components
         mFirebaseAuth=FirebaseAuth.getInstance();
@@ -181,7 +176,6 @@ public class MainActivity extends AppCompatActivity {
                 FirebaseUser user= firebaseAuth.getCurrentUser();
                 if(user!=null){
                     // user is signed in
-                   // Toast.makeText(MainActivity.this, "Welcome "+user.getDisplayName(), Toast.LENGTH_SHORT).show();
                     mUsername=user.getDisplayName();
                     TVname.setText(mUsername);
                     mDatabaseReference=mFirebaseDatabase.getReference().child(mUsername);
@@ -205,11 +199,8 @@ public class MainActivity extends AppCompatActivity {
         mChildEventListener= new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-                if(dataSnapshot.getKey().equals(MainActivity.mUsername)) {
-                    contactDetails = dataSnapshot.getValue(ContactDetails.class);
-//                    Toast.makeText(MainActivity.this, "1st no is "+contactDetails.getNum1(), Toast.LENGTH_SHORT).show();
-                }
+                contactDetails = dataSnapshot.getValue(ContactDetails.class);
+                contacts.add(contactDetails);
             }
 
             @Override

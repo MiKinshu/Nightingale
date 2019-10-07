@@ -11,6 +11,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.IBinder;
+import android.telephony.SmsManager;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -25,6 +26,9 @@ import io.chirp.chirpsdk.interfaces.ChirpEventListener;
 import io.chirp.chirpsdk.models.ChirpError;
 
 import static com.kinshuu.nightingale.MainActivity.chirp;
+import static com.kinshuu.nightingale.MainActivity.contacts;
+import static com.kinshuu.nightingale.MainActivity.mLong;
+import static com.kinshuu.nightingale.MainActivity.mlat;
 
 public class Listener extends Service {
 
@@ -95,7 +99,13 @@ public class Listener extends Service {
                     }
                     else{
                         //send text message
+
+                        mUsername=Character.toString(identifier.charAt(0));
                         Toast.makeText(Listener.this, "Network Available, sending text and Firebase.", Toast.LENGTH_SHORT).show();
+                        SmsManager smsManager = SmsManager.getDefault();
+                        String number=contacts.get(Integer.parseInt(mUsername)).getNum1();
+                        smsManager.sendTextMessage(number, null, "I am sending my location for precaution for my safety. lat = " + mlat + " and long= " + mLong, null, null);
+
                     }
                 } else {
                     Log.e("ChirpError: ", "Decode failed");

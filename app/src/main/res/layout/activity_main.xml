@@ -43,21 +43,23 @@
 
     <ImageButton
         android:id="@+id/IBTNalert"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="282dp"
+        android:layout_height="96dp"
         android:layout_marginBottom="52dp"
-        android:background="@drawable/kuchbhi"
         app:layout_constraintBottom_toTopOf="@+id/imageView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView3"
         app:srcCompat="@drawable/ic_icon_alert" />
 
     <ImageView
         android:id="@+id/imageView"
+
         android:layout_width="80dp"
         android:layout_height="80dp"
         android:layout_marginLeft="30dp"
-        android:background="@drawable/ic_icon_heat"
+        android:background="@drawable/img"
+
         app:layout_constraintBottom_toTopOf="@+id/BTNsettings"
         app:layout_constraintStart_toStartOf="parent" />
 
@@ -69,8 +71,11 @@
         android:text="TextView"
         android:textSize="22sp"
         app:layout_constraintBottom_toBottomOf="@+id/imageView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.04"
         app:layout_constraintStart_toEndOf="@+id/imageView"
         app:layout_constraintTop_toTopOf="@+id/imageView"
+        app:layout_constraintVertical_bias="0.44"
         tools:text="Madhubala" />
 
     <Button
@@ -134,9 +139,24 @@
         android:text="HOME"
         android:textSize="22sp"
         android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/imageButton"
+        app:layout_constraintStart_toEndOf="@+id/imageButton2"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageButton
+        android:id="@+id/imageButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@drawable/ic_list"
+        tools:layout_editor_absoluteY="16dp" />
+
+    <ImageButton
+        android:id="@+id/imageButton2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_logo" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
