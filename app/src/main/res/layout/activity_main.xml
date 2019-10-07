@@ -4,12 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/bh"
     tools:context=".MainActivity">
 
     <ImageButton
         android:id="@+id/IBTNheat"
-        android:layout_width="88dp"
-        android:layout_height="88dp"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:background="@drawable/kuchbhi"
         app:layout_constraintEnd_toStartOf="@+id/IBTNroute"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
@@ -18,19 +20,21 @@
 
     <ImageButton
         android:id="@+id/IBTNroute"
-        android:layout_width="88dp"
-        android:layout_height="88dp"
-        app:layout_constraintBottom_toTopOf="@+id/IBTNalert"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_marginTop="80dp"
+        android:background="@drawable/kuchbhi"
         app:layout_constraintEnd_toStartOf="@+id/IBTNcab"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/IBTNheat"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView6"
         app:srcCompat="@drawable/ic_icon_route" />
 
     <ImageButton
         android:id="@+id/IBTNcab"
-        android:layout_width="88dp"
-        android:layout_height="88dp"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:background="@drawable/kuchbhi"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/IBTNroute"
@@ -41,6 +45,8 @@
         android:id="@+id/IBTNalert"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="52dp"
+        android:background="@drawable/kuchbhi"
         app:layout_constraintBottom_toTopOf="@+id/imageView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -48,14 +54,15 @@
 
     <ImageView
         android:id="@+id/imageView"
-        android:layout_width="88dp"
-        android:layout_height="88dp"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_marginLeft="30dp"
+        android:background="@drawable/ic_icon_heat"
         app:layout_constraintBottom_toTopOf="@+id/BTNsettings"
-        app:layout_constraintStart_toStartOf="parent"
-        android:background="@drawable/fui_ic_facebook_white_22dp" />
+        app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/TVname"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="15dp"
@@ -68,9 +75,9 @@
 
     <Button
         android:id="@+id/BTNsettings"
-        android:layout_width="327dp"
-        android:layout_height="103dp"
-        android:layout_marginBottom="4dp"
+        android:layout_width="238dp"
+        android:layout_height="76dp"
+        android:layout_marginBottom="16dp"
         android:background="@drawable/ic_icon_settings"
         android:text="SETTINGS"
         android:textColor="#ffffff"
@@ -78,5 +85,58 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:text="HeatMap"
+        app:layout_constraintEnd_toEndOf="@+id/IBTNheat"
+        app:layout_constraintStart_toStartOf="@+id/IBTNheat"
+        app:layout_constraintTop_toBottomOf="@+id/IBTNheat" />
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:text="Safest Route"
+        app:layout_constraintEnd_toEndOf="@+id/IBTNroute"
+        app:layout_constraintStart_toStartOf="@+id/IBTNroute"
+        app:layout_constraintTop_toBottomOf="@+id/IBTNroute" />
+
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:text="Cab"
+        app:layout_constraintEnd_toEndOf="@+id/IBTNcab"
+        app:layout_constraintStart_toStartOf="@+id/IBTNcab"
+        app:layout_constraintTop_toBottomOf="@+id/IBTNcab" />
+
+    <TextView
+        android:id="@+id/textView5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:text="Alert"
+        app:layout_constraintEnd_toEndOf="@+id/IBTNalert"
+        app:layout_constraintStart_toStartOf="@+id/IBTNalert"
+        app:layout_constraintTop_toBottomOf="@+id/IBTNalert" />
+
+    <TextView
+        android:id="@+id/textView6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="28dp"
+        android:text="HOME"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

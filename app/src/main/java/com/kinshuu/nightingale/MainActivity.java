@@ -1,22 +1,12 @@
 package com.kinshuu.nightingale;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
-
 import android.content.pm.PackageManager;
-import android.location.Address;
-import android.location.Geocoder;
-import android.location.Location;
-import android.location.LocationListener;
 import android.location.LocationManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
 import android.telephony.SmsManager;
@@ -24,24 +14,32 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import com.firebase.ui.auth.AuthUI;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
-import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.Arrays;
-import java.util.List;
-import java.util.Locale;
-
-
-import android.util.Log;
 
 import io.chirp.chirpsdk.ChirpSDK;
 import io.chirp.chirpsdk.models.ChirpError;
-import io.chirp.chirpsdk.interfaces.ChirpEventListener;
+
+
 public class MainActivity extends AppCompatActivity {
 
 
@@ -60,17 +58,30 @@ public class MainActivity extends AppCompatActivity {
     //firebase instance variables
     private FirebaseAuth mFirebaseAuth;
     private FirebaseAuth.AuthStateListener mAuthStateListener;
+    public static FirebaseDatabase mFirebaseDatabase;
+    public static DatabaseReference mDatabaseReference,mDatabaseReferencewide;
+    public static ChildEventListener mChildEventListener;
+    public static String mUsername="0";
+    String lat="28.613";
+    String longi="77.229";
 
     //textmessage
     private SmsManager mMessageManager;
     private double mlat=18.6058 ,mLong=73.8753;
     private LocationManager mLocationManager = null;
+    ContactDetails contactDetails;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        mFirebaseDatabase=FirebaseDatabase.getInstance();
+        mDatabaseReference=mFirebaseDatabase.getReference().child(mUsername);
+        mDatabaseReferencewide=mFirebaseDatabase.getReference().child("users");
+
+        lat=lat.substring(lat.lastIndexOf(".")+1);
+        longi=longi.substring(longi.lastIndexOf(".")+1);
         chirp = new ChirpSDK(this, CHIRP_APP_KEY, CHIRP_APP_SECRET);
         ChirpError error = chirp.setConfig(CHIRP_APP_CONFIG);
         if (error.getCode() == 0) {
@@ -84,12 +95,11 @@ public class MainActivity extends AppCompatActivity {
         ImageButton IBTNcab=findViewById(R.id.IBTNcab);
         ImageButton IBTNalert=findViewById(R.id.IBTNalert);
         Button BTNsettings=findViewById(R.id.BTNsettings);
+        final TextView TVname=findViewById(R.id.TVname);
 
         mMessageManager = SmsManager.getDefault();
         mLocationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         startService(new Intent(this, Listener.class));
-
-
 
         //text message
        /* if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
@@ -109,16 +119,23 @@ public class MainActivity extends AppCompatActivity {
             @RequiresApi(api = Build.VERSION_CODES.M)
             @Override
             public void onClick(View view) {
-
-                //sending w/o signal
-                byte[] payload = identifier.getBytes(Charset.forName("UTF-8"));
-                ChirpError error = chirp.send(payload);
-                if (error.getCode() > 0) {
-                    Log.e("ChirpError: ", error.getMessage());
-                } else {
-                    Log.v("ChirpSDK: ", "Sent " + identifier);
+                if(!isNetworkAvailable()) {
+                    //sending w/o signal
+                    Toast.makeText(MainActivity.this, "Network Unavailable, sending audio", Toast.LENGTH_SHORT).show();
+                    identifier=mUsername+lat+longi;
+                    byte[] payload = identifier.getBytes(Charset.forName("UTF-8"));
+                    ChirpError error = chirp.send(payload);
+                    Log.d(TAG, "onClick: identifier is "+identifier);
+                    if (error.getCode() > 0) {
+                        Log.e("ChirpError: ", error.getMessage());
+                    } else {
+                        Log.v("ChirpSDK: ", "Sent " + identifier);
+                    }
                 }
-
+                else{
+                    //send text message
+                    Toast.makeText(MainActivity.this, "Network Available, sending text.", Toast.LENGTH_SHORT).show();
+                }
                 /*Geocoder gcd = new Geocoder(getApplicationContext(), Locale.getDefault());
                 List<Address> address = null;
                 try {
@@ -149,14 +166,15 @@ public class MainActivity extends AppCompatActivity {
         BTNsettings.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(MainActivity.this, "Settings clicked", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(MainActivity.this, "Settings clicked", Toast.LENGTH_SHORT).show();
+                Intent intent= new Intent(MainActivity.this,com.kinshuu.nightingale.Settings.class);
+                startActivity(intent);
             }
         });
 
 
         //initialise Firebase components
         mFirebaseAuth=FirebaseAuth.getInstance();
-
         mAuthStateListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
@@ -164,12 +182,15 @@ public class MainActivity extends AppCompatActivity {
                 if(user!=null){
                     // user is signed in
                    // Toast.makeText(MainActivity.this, "Welcome "+user.getDisplayName(), Toast.LENGTH_SHORT).show();
+                    mUsername=user.getDisplayName();
+                    TVname.setText(mUsername);
+                    mDatabaseReference=mFirebaseDatabase.getReference().child(mUsername);
                 }
                 else{
                     // user is signed out
                     Log.d(TAG, "onAuthStateChanged: User is signed out.");
                     //OnSignedOutInitialise();
-                    /*startActivityForResult(
+                    startActivityForResult(
                             AuthUI.getInstance()
                                     .createSignInIntentBuilder()
                                     .setIsSmartLockEnabled(false)
@@ -177,41 +198,41 @@ public class MainActivity extends AppCompatActivity {
                                             new AuthUI.IdpConfig.GoogleBuilder().build(),
                                             new AuthUI.IdpConfig.EmailBuilder().build()))
                                     .build(),
-                            RC_SIGN_IN);*/
+                            RC_SIGN_IN);
                 }
             }
         };
-
-        /*ChirpEventListener chirpEventListener = new ChirpEventListener() {
-
+        mChildEventListener= new ChildEventListener() {
             @Override
-            public void onReceived(byte[] data, int channel) {
-                if (data != null) {
-                    String identifier = new String(data);
-                    Log.v("ChirpSDK: ", "Received " + identifier);
-                    Toast.makeText(MainActivity.this, "Received " + identifier, Toast.LENGTH_LONG).show();
-                } else {
-                    Log.e("ChirpError: ", "Decode failed");
+            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+                if(dataSnapshot.getKey().equals(MainActivity.mUsername)) {
+                    contactDetails = dataSnapshot.getValue(ContactDetails.class);
+//                    Toast.makeText(MainActivity.this, "1st no is "+contactDetails.getNum1(), Toast.LENGTH_SHORT).show();
                 }
             }
 
-            public void onSending(byte[] payload, int channel) {}
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
 
-
-            public void onSent(byte[] payload, int channel) {}
-
-
-            public void onReceiving(int channel) {}
-
-            public void onStateChanged(int oldState, int newState) {}
+            }
 
             @Override
-            public void onSystemVolumeChanged(float old, float current) {}
+            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
 
+            }
 
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
         };
-        chirp.setListener(chirpEventListener);*/
-
+        mDatabaseReferencewide.addChildEventListener(mChildEventListener);
 
     }
 
@@ -228,15 +249,6 @@ public class MainActivity extends AppCompatActivity {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.RECORD_AUDIO}, RESULT_REQUEST_RECORD_AUDIO);
         }
-        /*else {
-            // Start ChirpSDK sender and receiver, if no arguments are passed both sender and receiver are started
-            ChirpError error = chirp.start(true, true);
-            if (error.getCode() > 0) {
-                Log.e("ChirpError: ", error.getMessage());
-            } else {
-                Log.v(TAG, "Started ChirpSDK");
-            }
-        }*/
         mFirebaseAuth.addAuthStateListener(mAuthStateListener);
     }
 
@@ -270,32 +282,6 @@ public class MainActivity extends AppCompatActivity {
         Log.d(TAG, "onActivityResult: Exiting ActivityResult");
     }
 
-    /*public LocationListener getLocationListener(){
-        return new LocationListener() {
-            @Override
-            public void onLocationChanged(Location location) {
-                mlat= location.getLatitude();
-                mLong=location.getLongitude();
-                Log.e(TAG,"location changed");
-            }
-
-            @Override
-            public void onStatusChanged(String s, int i, Bundle bundle) {
-
-            }
-
-            @Override
-            public void onProviderEnabled(String s) {
-
-            }
-
-            @Override
-            public void onProviderDisabled(String s) {
-
-            }
-        };
-    }*/
-
     @Override
     public void onDestroy() {
         super.onDestroy();
@@ -307,5 +293,11 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
 
 }
